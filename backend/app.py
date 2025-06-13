@@ -3,17 +3,15 @@
 from flask import Flask, send_from_directory
 import os
 
-# Percorso assoluto alla cartella frontend
+# Percorso assoluto verso frontend_live
 FRONTEND_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend_live'))
 
 app = Flask(__name__, static_folder=FRONTEND_FOLDER, static_url_path='')
 
-# Homepage – serve index.html
 @app.route('/')
 def index():
     return send_from_directory(FRONTEND_FOLDER, 'index.html')
 
-# Serve altri file statici come script.js, style.css, ecc.
 @app.route('/<path:filename>')
 def serve_static(filename):
     return send_from_directory(FRONTEND_FOLDER, filename)
