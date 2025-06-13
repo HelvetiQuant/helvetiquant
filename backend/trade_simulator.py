@@ -1,5 +1,6 @@
 
 import time
+from telegram_notifier import send_telegram_message
 
 class TradeSimulator:
     def __init__(self, starting_balance=3600):
@@ -17,7 +18,12 @@ class TradeSimulator:
             "status": "OPEN"
         }
         self.active_trades.append(trade)
-        print(f"Trade aperto: {symbol} {direction} @ {entry_price} (leva {leverage}x)")
+        msg = f"📥 *TRADE APERTO*
+"               f"Symbol: `{symbol}`
+"               f"Direzione: *{direction}*
+"               f"Prezzo Entrata: `{entry_price}`
+"               f"Leva: `{leverage}x`"
+        send_telegram_message(msg)
 
     def close_trade(self, symbol, exit_price):
         for trade in self.active_trades:
@@ -30,16 +36,21 @@ class TradeSimulator:
                 self.balance += pnl
                 self.trade_history.append(trade)
                 self.active_trades.remove(trade)
-                print(f"Trade chiuso: {symbol} PnL: {pnl:.2f} USDT")
+
+                msg = f"📤 *TRADE CHIUSO*
+"                       f"Symbol: `{symbol}`
+"                       f"Prezzo Uscita: `{exit_price}`
+"                       f"PnL: `{pnl:.2f} USDT`
+"                       f"💰 Balance attuale: `{self.get_balance()} USDT`"
+                send_telegram_message(msg)
                 return pnl
-        print(f"Nessun trade aperto trovato per {symbol}")
         return 0
 
     def _calculate_pnl(self, trade, exit_price):
         entry = trade["entry_price"]
         leverage = trade["leverage"]
         direction = trade["direction"]
-        size = self.balance / 3  # massimo 1/3 del capitale
+        size = self.balance / 3
         delta = (exit_price - entry) / entry
         if direction == "SHORT":
             delta *= -1
@@ -54,7 +65,6 @@ class TradeSimulator:
     def get_trade_history(self):
         return self.trade_history
 
-# Esempio
 if __name__ == "__main__":
     sim = TradeSimulator()
     sim.open_trade("1000PEPEUSDT", entry_price=0.00000100)
