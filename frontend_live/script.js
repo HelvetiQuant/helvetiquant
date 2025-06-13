@@ -1,26 +1,21 @@
 async function fetchMarketData() {
-  try {
-    const priceRes = await fetch("/price");
-    const signalRes = await fetch("/signal");
-    const tradesRes = await fetch("/trades");
+    try {
+        const res = await fetch("https://helvetiquanta.up.railway.app/price");
+        const data = await res.json();
+        displayData(data);
+    } catch (error) {
+        console.error("Errore nel recupero dati:", error);
+        document.getElementById("output").innerText = "Errore nel caricamento.";
+    }
+}
 
-    const price = await priceRes.json();
-    const signal = await signalRes.json();
-    const trades = await tradesRes.json();
-
-    console.log({ price, signal, trades });
-
-    document.getElementById("output").innerHTML = `
-      <strong>Token:</strong> ${price.token}<br>
-      <strong>Price:</strong> ${price.price}<br>
-      <strong>Signal:</strong> ${signal.action} (Confidenza: ${signal.confidence})<br>
-      <strong>Ultimi trade:</strong><br>
-      ${trades.map(t => `Entry: ${t.entry}, Exit: ${t.exit}, Profit: ${t.profit}`).join("<br>")}
+function displayData(ticker) {
+    const container = document.getElementById("output");
+    container.innerHTML = `
+        <strong>Token:</strong> ${ticker.token}<br>
+        <strong>Prezzo:</strong> ${ticker.price}<br>
+        <strong>Timestamp:</strong> ${ticker.timestamp}
     `;
-  } catch (error) {
-    document.getElementById("output").innerText = "Errore nel recupero dati.";
-    console.error(error);
-  }
 }
 
 setInterval(fetchMarketData, 3000);
