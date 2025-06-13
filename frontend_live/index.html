@@ -1,16 +1,29 @@
-<!-- frontend_live/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>HelvetiQuant Dashboard</title>
-    <script defer src="script.js"></script>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>HelvetiQuant Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
 </head>
 <body>
-    <h1>HelvetiQuant Dashboard</h1>
-    <div id="content">
-        <p>Status: <span id="status">Loading...</span></p>
-    </div>
+  <h1>HelvetiQuant Dashboard</h1>
+
+  <div id="status-section">
+    <p>Status: <span id="status">Loading...</span></p>
+    <p>AI Decision: <span id="ai-decision">Waiting...</span></p>
+    <p>Claude Decision: <span id="claude-decision">Waiting...</span></p>
+  </div>
+
+  <div id="pump-alert-section">
+    <button id="pump-button" class="neutral">Waiting for signal</button>
+  </div>
+
+  <div id="watchlist">
+    <h3>AI Watchlist</h3>
+    <ul id="token-list">
+      <li>Scanning...</li>
+    </ul>
+  </div>
 </body>
 </html>
