@@ -1,4 +1,4 @@
-function testBot() {
-  alert("Il bot HelvetiQuant sta eseguendo una simulazione.");
-  // Qui si potrebbero aggiungere chiamate reali a backend o logica AI
+function stopBot() {
+    alert("🚨 Trading fermato manualmente!");
+    // Integrazione futura con /stop-trade se esiste
 }
