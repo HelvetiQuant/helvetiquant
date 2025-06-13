@@ -1,13 +1,13 @@
+# Dockerfile
 FROM python:3.10-slim
 
 WORKDIR /app
 
 COPY backend /app/backend
-COPY frontend_live /app/frontend
-COPY requirements.txt .
+COPY frontend_live /app/frontend_live
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install flask
 
-EXPOSE 8080
+EXPOSE 8000
 
-CMD ["python3", "backend/app.py"]
+CMD ["python", "backend/app.py"]
