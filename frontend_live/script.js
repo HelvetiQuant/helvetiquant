@@ -30,3 +30,4 @@ function displayData(tickers) {
 }
 
 setInterval(fetchMarketData, 30000);
+fetchMarketData();
