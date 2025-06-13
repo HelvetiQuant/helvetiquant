@@ -5,15 +5,15 @@ import os
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route('/')
 def index():
-    return send_from_directory(os.path.join(os.getcwd(), 'frontend_live'), 'index.html')
+    return send_from_directory('../frontend', 'index.html')
 
-@app.route("/js")
-def js():
-    return send_from_directory(os.path.join(os.getcwd(), 'frontend_live'), 'script.js')
+@app.route('/script.js')
+def script():
+    return send_from_directory('../frontend', 'script.js')
 
-@app.route("/price")
+@app.route('/price')
 def price():
     return jsonify({
         "token": "XRPUSDT",
@@ -21,14 +21,14 @@ def price():
         "timestamp": int(time.time())
     })
 
-@app.route("/signal")
+@app.route('/signal')
 def signal():
     return jsonify({
         "action": random.choice(["BUY", "HOLD", "SELL"]),
         "confidence": round(random.uniform(0.6, 0.95), 2)
     })
 
-@app.route("/trades")
+@app.route('/trades')
 def trades():
     return jsonify([
         {"entry": 0.45678, "exit": 0.47890, "profit": "+4.83%"},
@@ -36,6 +36,5 @@ def trades():
     ])
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000))
+    port = int(os.getenv("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
-    
