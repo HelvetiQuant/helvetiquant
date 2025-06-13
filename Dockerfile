@@ -1,3 +1,13 @@
-# Dockerfile
+FROM python:3.10-slim
 
-Contenuto placeholder da helvetiquant.
+WORKDIR /app
+
+COPY backend /app/backend
+COPY frontend_live /app/frontend
+COPY config.env /app/.env
+
+RUN pip install flask requests python-dotenv
+
+EXPOSE 8080
+
+CMD ["python3", "backend/app.py"]
