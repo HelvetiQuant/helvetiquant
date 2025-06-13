@@ -1,25 +1,32 @@
-async function fetchData() {
-    const priceRes = await fetch("/price");
-    const signalRes = await fetch("/signal");
-    const tradesRes = await fetch("/trades");
+async function fetchMarketData() {
+    try {
+        const response = await fetch("https://api.bybit.com/v2/public/tickers");
+        const data = await response.json();
+        const tickers = data.result;
 
-    const priceData = await priceRes.json();
-    const signalData = await signalRes.json();
-    const tradesData = await tradesRes.json();
+        const symbols = ["BTCUSDT", "ETHUSDT", "XRPUSDT"];
+        const filtered = tickers.filter(t => symbols.includes(t.symbol));
+        displayData(filtered);
+    } catch (error) {
+        console.error("Errore nel recupero dati:", error);
+        document.getElementById("output").innerText = "Errore nel recupero dei dati";
+    }
+}
 
-    document.getElementById("token").innerText = priceData.token;
-    document.getElementById("price").innerText = priceData.price;
-    document.getElementById("signal").innerText = signalData.action;
-    document.getElementById("confidence").innerText = signalData.confidence;
+function displayData(tickers) {
+    const container = document.getElementById("output");
+    container.innerHTML = "";
 
-    const tradeList = document.getElementById("trade-list");
-    tradeList.innerHTML = "";
-    tradesData.forEach(trade => {
-        const item = document.createElement("li");
-        item.innerText = `Entry: ${trade.entry}, Exit: ${trade.exit}, Profit: ${trade.profit}`;
-        tradeList.appendChild(item);
+    tickers.forEach(ticker => {
+        const price = parseFloat(ticker.last_price);
+        const change = parseFloat(ticker.percent_change_24h);
+        const direction = change >= 0 ? "🟢" : "🔴";
+
+        const line = document.createElement("div");
+        line.innerText = `${direction} ${ticker.symbol}: $${price.toFixed(4)} (${change.toFixed(2)}%)`;
+        line.style.color = change >= 0 ? "lime" : "red";
+        container.appendChild(line);
     });
 }
 
-setInterval(fetchData, 3000);
-fetchData();
+setInterval(fetchMarketData, 30000);
