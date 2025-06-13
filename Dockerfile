@@ -3,10 +3,10 @@ FROM python:3.10-slim
 WORKDIR /app
 
 COPY backend /app/backend
-COPY frontend_live /app/frontend
-COPY .env.example /app/.env
+COPY frontend_live /app/frontend_live
+COPY requirements.txt /app/requirements.txt
 
-RUN pip install flask requests python-dotenv
+RUN pip install -r requirements.txt
 
 EXPOSE 8080
 
