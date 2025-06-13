@@ -1,9 +1,11 @@
-from flask import Flask, render_template
-app = Flask(__name__, template_folder='../frontend_live')
+from flask import Flask, send_from_directory
+import os
 
-@app.route('/')
+app = Flask(__name__)
+
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return "HelvetiQuant è attivo"
 
 @app.route("/dashboard")
 def dashboard():
@@ -15,4 +17,4 @@ def js():
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host="0.0.0.0", port=port)
