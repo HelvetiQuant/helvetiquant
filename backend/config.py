@@ -1,3 +1,3 @@
-# app.py
+# config.py
 
 Contenuto placeholder da helvetiquant.
