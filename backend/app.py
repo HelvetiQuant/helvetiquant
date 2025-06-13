@@ -1,11 +1,9 @@
-from flask import Flask, send_from_directory
-import os
+from flask import Flask, render_template
+app = Flask(__name__, template_folder='../frontend_live')
 
-app = Flask(__name__)
-
-@app.route("/")
+@app.route('/')
 def index():
-    return "HelvetiQuant è attivo"
+    return render_template('index.html')
 
 @app.route("/dashboard")
 def dashboard():
