@@ -3,7 +3,7 @@ FROM python:3.10-slim
 WORKDIR /app
 
 COPY backend /app/backend
-COPY frontend_live /app/frontend
+COPY frontend_live /app/templates
 
 RUN pip install flask requests python-dotenv
 
