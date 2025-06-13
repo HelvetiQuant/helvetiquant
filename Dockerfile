@@ -4,7 +4,6 @@ WORKDIR /app
 
 COPY backend /app/backend
 COPY frontend_live /app/frontend
-COPY config.env /app/.env
 
 RUN pip install flask requests python-dotenv
 
