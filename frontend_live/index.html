@@ -1,29 +1,75 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <title>HelvetiQuant Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <script defer src="script.js"></script>
+    <meta charset="UTF-8">
+    <title>HelvetiQuant AI Dashboard</title>
+    <style>
+        body {
+            background-color: #0e1117;
+            color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .top-bar {
+            height: 60px;
+            background: #1f2937;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .main {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+        .side-panel {
+            width: 20%;
+            background: #111827;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .center-panel {
+            width: 60%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .token-box, .sector-box, .sentiment-box {
+            background: #1f2937;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-  <h1>HelvetiQuant Dashboard</h1>
-
-  <div id="status-section">
-    <p>Status: <span id="status">Loading...</span></p>
-    <p>AI Decision: <span id="ai-decision">Waiting...</span></p>
-    <p>Claude Decision: <span id="claude-decision">Waiting...</span></p>
-  </div>
-
-  <div id="pump-alert-section">
-    <button id="pump-button" class="neutral">Waiting for signal</button>
-  </div>
-
-  <div id="watchlist">
-    <h3>AI Watchlist</h3>
-    <ul id="token-list">
-      <li>Scanning...</li>
-    </ul>
-  </div>
+    <div class="top-bar">
+        <div>📊 HelvetiQuant AI</div>
+        <div>🕒 Live Market Monitoring</div>
+        <div>🌐 AI Status: Active</div>
+    </div>
+    <div class="main">
+        <div class="side-panel">
+            <div class="token-box">📈 Watchlist Top 10</div>
+            <div class="token-box">📊 Profit & Loss (Daily)</div>
+            <div class="token-box">😨 Fear & Greed Index</div>
+        </div>
+        <div class="center-panel">
+            <div class="sector-box">🔵 Token Attivo 1</div>
+            <div class="sector-box">🟢 Token Attivo 2</div>
+            <div class="sector-box">🔴 Token Attivo 3</div>
+        </div>
+        <div class="side-panel">
+            <div class="token-box">💬 Social Sentiment</div>
+            <div class="token-box">📰 News & Politica</div>
+            <div class="token-box">📊 Settori Forti</div>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
