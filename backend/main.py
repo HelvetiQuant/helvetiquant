@@ -1,81 +1,48 @@
 
-import os
-import time
-import threading
-from datetime import datetime
 from flask import Flask, jsonify
-from trade_simulator import TradeSimulator
-from report_generator import generate_daily_report
-from telegram_notifier import send_telegram_message
-from bybit_data_fetcher import get_ticker
+from pybit.unified_trading import HTTP
 import requests
+from datetime import datetime
+import os
 
-# Inizializza Flask app
 app = Flask(__name__)
 
-# Inizializza simulatore
-simulator = TradeSimulator(starting_balance=3600)
+# Legge API Key e Secret da variabili d'ambiente (Railway)
+API_KEY = os.getenv("API_KEY")
+API_SECRET = os.getenv("API_SECRET")
 
-# ROUTES VISIBILI SULLA DASHBOARD PUBBLICA
-@app.route("/")
-def home():
-    return "✅ HelvetiQuant è attivo e funzionante"
-
-@app.route("/status")
-def status():
-    return jsonify({
-        "status": "online",
-        "balance": simulator.get_balance(),
-        "open_trades": simulator.get_open_trades(),
-        "time": datetime.now().isoformat()
-    })
+session = HTTP(testnet=False, api_key=API_KEY, api_secret=API_SECRET)
 
 @app.route("/api/status")
-def api_status():
-    try:
-        ticker = get_ticker("1000PEPEUSDT")
-        return jsonify({
-            "symbol": "1000PEPEUSDT",
-            "price": ticker["price"],
-            "funding_rate": ticker["funding_rate"],
-            "volume_24h": ticker["volume_24h"],
-            "gpt": "LONG 1000PEPEUSDT @ 25x per eccesso dump",
-            "claude": "Confermato LONG (RSI basso + funding positivo)",
-            "signal": "PUMP",
-            "watchlist": ["PEPE", "SHIB", "BONK"]
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+def get_status():
+    # Da sostituire con logica live del bot o segnali
+    active_tokens = ["BTCUSDT", "ETHUSDT", "SOLUSDT"]
+    return jsonify({"active_tokens": active_tokens})
 
-# FUNZIONI OPERATIVE
-def daily_report_and_notify():
-    trades = simulator.get_trade_history()
-    balance = simulator.get_balance()
-    pdf_path = generate_daily_report(balance=balance, trades=trades)
-    send_telegram_message(f"📄 Report giornaliero generato. Bilancio: {balance:.2f} USDT")
-    with open(pdf_path, "rb") as f:
-        requests.post(
-            url=f"https://api.telegram.org/bot{os.getenv('TELEGRAM_BOT_TOKEN')}/sendDocument",
-            data={"chat_id": os.getenv("TELEGRAM_CHAT_ID")},
-            files={"document": f}
-        )
+@app.route("/api/watchlist")
+def get_watchlist():
+    tickers = session.get_tickers(category="linear")["result"]["list"]
+    sorted_tickers = sorted(tickers, key=lambda x: float(x["volume24h"]), reverse=True)
+    top10 = [item["symbol"] for item in sorted_tickers[:10]]
+    return jsonify({"watchlist": top10})
 
-def trading_loop():
-    while True:
-        now = datetime.utcnow()
-        if now.hour == 18 and now.minute == 0:  # 20:00 CET = 18:00 UTC
-            print("🕗 Generazione report giornaliero")
-            daily_report_and_notify()
-            time.sleep(60)
-        else:
-            time.sleep(30)
+@app.route("/api/pnl/today")
+def get_daily_pnl():
+    # Statico per ora - da collegare con trading logger reale
+    today_pnl = {"trades": 4, "total_pnl": 135}
+    return jsonify(today_pnl)
 
-# MAIN
+@app.route("/api/sentiment")
+def get_sentiment():
+    url = "https://api.alternative.me/fng/"
+    response = requests.get(url)
+    data = response.json()
+    today_data = data["data"][0]
+    return jsonify({
+        "value": today_data["value"],
+        "label": today_data["value_classification"],
+        "timestamp": datetime.utcfromtimestamp(int(today_data["timestamp"])).strftime('%Y-%m-%d %H:%M:%S')
+    })
+
 if __name__ == "__main__":
-    # Avvia loop trading in thread separato
-    t = threading.Thread(target=trading_loop)
-    t.daemon = True
-    t.start()
-
-    # Avvia server Flask su Railway
-    app.run(host="0.0.0.0", port=8080)
+    app.run(debug=True)
